@@ -9,6 +9,9 @@
         <scene sceneID="aou-V4-d1y">
             <objects>
                 <controller identifier="today" id="AgC-eL-Hgc" customClass="TodayInterfaceController" customModule="Running_Weather_WatchKit_1_Extension">
+                    <items>
+                        <label height="20" alignment="left" text="Right now:" id="dKF-QB-eE7"/>
+                    </items>
                     <connections>
                         <segue destination="3H2-y0-u25" kind="relationship" relationship="nextPage" id="osj-T4-hB8"/>
                     </connections>
