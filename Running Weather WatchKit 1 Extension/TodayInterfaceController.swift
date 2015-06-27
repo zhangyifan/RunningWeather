@@ -12,6 +12,20 @@ import CoreLocation
 
 class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate {
     
+    @IBOutlet var nowWordLabel: WKInterfaceLabel!
+    
+    @IBOutlet var nowTemperatureLabel: WKInterfaceLabel!
+    
+    @IBOutlet var nowSummaryLabel: WKInterfaceLabel!
+    
+    @IBOutlet var nowHumidityIcon: WKInterfaceImage!
+    
+    @IBOutlet var nowHumidityLabel: WKInterfaceLabel!
+    
+    @IBOutlet var nowWindIcon: WKInterfaceImage!
+    
+    @IBOutlet var nowWindLabel: WKInterfaceLabel!
+    
     var locationManager = CLLocationManager()
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

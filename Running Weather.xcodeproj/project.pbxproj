@@ -23,6 +23,8 @@
 		E3B551231B3F3ADD00C70DF1 /* Running Weather WatchKit 1 Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E3B551091B3F3ADD00C70DF1 /* Running Weather WatchKit 1 Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E3B5512C1B3F3B7800C70DF1 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3B5512B1B3F3B7800C70DF1 /* CoreLocation.framework */; };
 		E3B5512F1B3F401300C70DF1 /* ThisWeekInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B5512D1B3F400300C70DF1 /* ThisWeekInterfaceController.swift */; };
+		E3B551361B3F49A400C70DF1 /* humidity.png in Resources */ = {isa = PBXBuildFile; fileRef = E3B551341B3F49A400C70DF1 /* humidity.png */; };
+		E3B551371B3F49A400C70DF1 /* wind.png in Resources */ = {isa = PBXBuildFile; fileRef = E3B551351B3F49A400C70DF1 /* wind.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +98,8 @@
 		E3B551201B3F3ADD00C70DF1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E3B5512B1B3F3B7800C70DF1 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		E3B5512D1B3F400300C70DF1 /* ThisWeekInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThisWeekInterfaceController.swift; path = "Running Weather WatchKit 1 Extension/ThisWeekInterfaceController.swift"; sourceTree = SOURCE_ROOT; };
+		E3B551341B3F49A400C70DF1 /* humidity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = humidity.png; sourceTree = "<group>"; };
+		E3B551351B3F49A400C70DF1 /* wind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wind.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,6 +216,8 @@
 			isa = PBXGroup;
 			children = (
 				E3B5511B1B3F3ADD00C70DF1 /* Interface.storyboard */,
+				E3B551341B3F49A400C70DF1 /* humidity.png */,
+				E3B551351B3F49A400C70DF1 /* wind.png */,
 				E3B5511E1B3F3ADD00C70DF1 /* Assets.xcassets */,
 				E3B551201B3F3ADD00C70DF1 /* Info.plist */,
 			);
@@ -398,7 +404,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E3B5511F1B3F3ADD00C70DF1 /* Assets.xcassets in Resources */,
+				E3B551371B3F49A400C70DF1 /* wind.png in Resources */,
 				E3B5511D1B3F3ADD00C70DF1 /* Interface.storyboard in Resources */,
+				E3B551361B3F49A400C70DF1 /* humidity.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -717,6 +725,7 @@
 				E3B550FE1B3F3AD700C70DF1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E3B550FF1B3F3AD700C70DF1 /* Build configuration list for PBXNativeTarget "Running WeatherTests" */ = {
 			isa = XCConfigurationList;
@@ -725,6 +734,7 @@
 				E3B551011B3F3AD700C70DF1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E3B551021B3F3AD700C70DF1 /* Build configuration list for PBXNativeTarget "Running WeatherUITests" */ = {
 			isa = XCConfigurationList;
@@ -733,6 +743,7 @@
 				E3B551041B3F3AD700C70DF1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E3B551241B3F3ADE00C70DF1 /* Build configuration list for PBXNativeTarget "Running Weather WatchKit 1 App" */ = {
 			isa = XCConfigurationList;
@@ -741,6 +752,7 @@
 				E3B551261B3F3ADE00C70DF1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E3B551271B3F3ADE00C70DF1 /* Build configuration list for PBXNativeTarget "Running Weather WatchKit 1 Extension" */ = {
 			isa = XCConfigurationList;
@@ -749,6 +761,7 @@
 				E3B551291B3F3ADE00C70DF1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
