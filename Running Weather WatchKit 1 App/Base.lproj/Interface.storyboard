@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="8121.20" systemVersion="14D136" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8101.16"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="8066.14"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="AvenirNext.ttc">
+            <string>AvenirNext-Heavy</string>
+            <string>AvenirNext-Heavy</string>
+        </mutableArray>
+    </customFonts>
+    <scenes>
+        <!--today-->
+        <scene sceneID="aou-V4-d1y">
+            <objects>
+                <controller identifier="today" id="AgC-eL-Hgc" customClass="TodayInterfaceController" customModule="Running_Weather_WatchKit_1_Extension">
+                    <items>
+                        <group width="1" height="100" alignment="left" layout="vertical" id="kT7-3u-tVH">
+                            <items>
+                                <label alignment="center" text="Perfect!" textAlignment="center" id="AMf-ki-uxg">
+                                    <fontDescription key="font" name="AvenirNext-Heavy" family="Avenir Next" pointSize="30"/>
+                                </label>
+                                <label alignment="center" text="70°" id="yat-MG-ghx">
+                                    <fontDescription key="font" name="AvenirNext-Heavy" family="Avenir Next" pointSize="30"/>
+                                </label>
+                                <label alignment="center" verticalAlignment="bottom" text="Light breeze &amp; clouds" textAlignment="center" minimumScaleFactor="0.5" id="RU8-Hd-csT">
+                                    <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
+                                </label>
+                            </items>
+                            <color key="backgroundColor" red="0.19714130587673229" green="0.75597774621212122" blue="0.64568178402155185" alpha="1" colorSpace="calibratedRGB"/>
+                        </group>
+                        <group width="1" height="37" alignment="left" id="6JB-IX-AdR">
+                            <items>
+                                <imageView width="30" height="30" alignment="left" verticalAlignment="center" image="humidity.png" id="6r7-kl-T4N"/>
+                                <label alignment="left" verticalAlignment="center" text="0%" id="nT3-zI-3z7"/>
+                                <imageView width="30" height="30" alignment="right" verticalAlignment="center" image="wind.png" id="aIC-o7-yHg"/>
+                                <label alignment="right" verticalAlignment="center" text="3m/h" id="jbc-ZI-IPC"/>
+                            </items>
+                        </group>
+                    </items>
+                    <connections>
+                        <outlet property="nowHumidityIcon" destination="6r7-kl-T4N" id="A1y-0A-U1h"/>
+                        <outlet property="nowHumidityLabel" destination="nT3-zI-3z7" id="SMz-KI-qyN"/>
+                        <outlet property="nowSummaryLabel" destination="RU8-Hd-csT" id="Eab-eb-cfC"/>
+                        <outlet property="nowTemperatureLabel" destination="yat-MG-ghx" id="jM3-tA-5uq"/>
+                        <outlet property="nowWindIcon" destination="aIC-o7-yHg" id="XMs-ir-igZ"/>
+                        <outlet property="nowWindLabel" destination="jbc-ZI-IPC" id="wgr-q7-NGP"/>
+                        <outlet property="nowWordLabel" destination="AMf-ki-uxg" id="dYn-m5-qDJ"/>
+                        <segue destination="3H2-y0-u25" kind="relationship" relationship="nextPage" id="osj-T4-hB8"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="220" y="345"/>
+        </scene>
+        <!--thisweek-->
+        <scene sceneID="kd6-ME-UAa">
+            <objects>
+                <controller identifier="thisweek" hidesWhenLoading="NO" id="3H2-y0-u25" customClass="ThisWeekInterfaceController" customModule="Running_Weather_WatchKit_1_Extension"/>
+            </objects>
+            <point key="canvasLocation" x="450" y="346"/>
+        </scene>
+        <!--Static Notification Interface Controller-->
+        <scene sceneID="AEw-b0-oYE">
+            <objects>
+                <notificationController id="YCC-NB-fut">
+                    <items>
+                        <label alignment="left" text="Alert Label" id="IdU-wH-bcW"/>
+                    </items>
+                    <notificationCategory key="notificationCategory" identifier="myCategory" id="JfB-70-Muf"/>
+                    <connections>
+                        <outlet property="notificationAlertLabel" destination="IdU-wH-bcW" id="JKC-fr-R95"/>
+                        <segue destination="4sK-HA-Art" kind="relationship" relationship="dynamicNotificationInterface" id="kXh-Jw-8B1"/>
+                    </connections>
+                </notificationController>
+            </objects>
+            <point key="canvasLocation" x="220" y="643"/>
+        </scene>
+        <!--Notification Controller-->
+        <scene sceneID="ZPc-GJ-vnh">
+            <objects>
+                <controller id="4sK-HA-Art" customClass="NotificationController" customModule="Running_Weather_WatchKit_1_App" customModuleProvider="target"/>
+            </objects>
+            <point key="canvasLocation" x="468" y="643"/>
+        </scene>
+    </scenes>
+</document>
