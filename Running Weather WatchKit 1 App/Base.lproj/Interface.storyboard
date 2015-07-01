@@ -38,6 +38,28 @@
                                 <label alignment="right" verticalAlignment="center" text="3m/h" id="jbc-ZI-IPC"/>
                             </items>
                         </group>
+                        <table alignment="left" id="CgT-2g-pSn">
+                            <items>
+                                <tableRow id="EtP-lh-wKh">
+                                    <group key="rootItem" width="1" alignment="left" id="DfA-9D-KmK">
+                                        <items>
+                                            <imageView width="25" height="1" alignment="left" id="CXJ-AY-z3i"/>
+                                            <group width="0.59999999999999998" height="1" alignment="left" layout="vertical" id="EMx-iw-zf9">
+                                                <items>
+                                                    <label width="1" height="0.29999999999999999" alignment="left" text="1pm | 60°" textAlignment="left" id="xBS-oh-P6q">
+                                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                                    </label>
+                                                    <label alignment="left" text="Perfect!" id="Q7L-P0-1kl"/>
+                                                </items>
+                                            </group>
+                                            <imageView width="15" height="0.29999999999999999" alignment="right" image="humidity.png" contentMode="scaleAspectFit" id="FhA-BH-UCw"/>
+                                            <imageView width="15" height="0.29999999999999999" alignment="right" image="wind.png" contentMode="scaleAspectFit" id="Z1F-8Y-z7Y"/>
+                                        </items>
+                                    </group>
+                                </tableRow>
+                            </items>
+                        </table>
                     </items>
                     <connections>
                         <outlet property="nowHumidityIcon" destination="6r7-kl-T4N" id="A1y-0A-U1h"/>
@@ -56,7 +78,26 @@
         <!--thisweek-->
         <scene sceneID="kd6-ME-UAa">
             <objects>
-                <controller identifier="thisweek" hidesWhenLoading="NO" id="3H2-y0-u25" customClass="ThisWeekInterfaceController" customModule="Running_Weather_WatchKit_1_Extension"/>
+                <controller identifier="thisweek" hidesWhenLoading="NO" id="3H2-y0-u25" customClass="ThisWeekInterfaceController" customModule="Running_Weather_WatchKit_1_Extension">
+                    <items>
+                        <table alignment="left" id="Pqz-WP-SRm">
+                            <items>
+                                <tableRow id="4v3-iq-vYe">
+                                    <group key="rootItem" width="1" alignment="left" id="lap-Jm-CNh">
+                                        <items>
+                                            <label alignment="left" verticalAlignment="center" text="SAT" id="UaY-dX-34O">
+                                                <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </label>
+                                            <label alignment="left" verticalAlignment="center" text="Best!" id="nXG-Yl-46D"/>
+                                            <label alignment="right" verticalAlignment="center" text="70°" textAlignment="right" id="eV3-HV-r8d"/>
+                                            <imageView width="0.14999999999999999" height="0.5" alignment="right" verticalAlignment="center" image="04d.png" contentMode="scaleAspectFit" id="1Cx-Nl-PRw"/>
+                                        </items>
+                                    </group>
+                                </tableRow>
+                            </items>
+                        </table>
+                    </items>
+                </controller>
             </objects>
             <point key="canvasLocation" x="450" y="346"/>
         </scene>

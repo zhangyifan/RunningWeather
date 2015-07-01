@@ -12,6 +12,7 @@ import CoreLocation
 
 class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate {
     
+    //NEED TO CREATE TABLE ROW CONTROLLERS AND CONNECT THEM
     var defaults = NSUserDefaults(suiteName: "group.com.yifanz.RunningWeather")
     
     @IBOutlet var nowWordLabel: WKInterfaceLabel!

@@ -25,6 +25,7 @@
 		E3B5512F1B3F401300C70DF1 /* ThisWeekInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B5512D1B3F400300C70DF1 /* ThisWeekInterfaceController.swift */; };
 		E3B551361B3F49A400C70DF1 /* humidity.png in Resources */ = {isa = PBXBuildFile; fileRef = E3B551341B3F49A400C70DF1 /* humidity.png */; };
 		E3B551371B3F49A400C70DF1 /* wind.png in Resources */ = {isa = PBXBuildFile; fileRef = E3B551351B3F49A400C70DF1 /* wind.png */; };
+		E3B5513B1B44A4A800C70DF1 /* 04d.png in Resources */ = {isa = PBXBuildFile; fileRef = E3B5513A1B44A4A800C70DF1 /* 04d.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +103,7 @@
 		E3B551351B3F49A400C70DF1 /* wind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wind.png; sourceTree = "<group>"; };
 		E3B551381B44510600C70DF1 /* Running Weather.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Running Weather.entitlements"; sourceTree = "<group>"; };
 		E3B551391B4451E500C70DF1 /* Running Weather WatchKit 1 Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Running Weather WatchKit 1 Extension.entitlements"; sourceTree = "<group>"; };
+		E3B5513A1B44A4A800C70DF1 /* 04d.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 04d.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,6 +224,7 @@
 				E3B5511B1B3F3ADD00C70DF1 /* Interface.storyboard */,
 				E3B551341B3F49A400C70DF1 /* humidity.png */,
 				E3B551351B3F49A400C70DF1 /* wind.png */,
+				E3B5513A1B44A4A800C70DF1 /* 04d.png */,
 				E3B5511E1B3F3ADD00C70DF1 /* Assets.xcassets */,
 				E3B551201B3F3ADD00C70DF1 /* Info.plist */,
 			);
@@ -419,6 +422,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E3B5513B1B44A4A800C70DF1 /* 04d.png in Resources */,
 				E3B5511F1B3F3ADD00C70DF1 /* Assets.xcassets in Resources */,
 				E3B551371B3F49A400C70DF1 /* wind.png in Resources */,
 				E3B5511D1B3F3ADD00C70DF1 /* Interface.storyboard in Resources */,
