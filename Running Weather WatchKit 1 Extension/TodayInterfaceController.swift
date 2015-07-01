@@ -28,47 +28,68 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     
     @IBOutlet var nowWindLabel: WKInterfaceLabel!
     
-    //NEED TO FIGURE OUT HOW TO NOT SET THIS
-    var latitude = 0.0
-    
-    var longitude = 0.0
+    //CLLocation object - use that instead of latitude, longitude variables
+    var location = CLLocation(latitude: 0.0, longitude: 0.0)
     
     let weatherAPIKey = "ef2c62731316105942e0658cb48dbbd5"
     
-    var locationManager = CLLocationManager()
+    var myLocationManager = CLLocationManager()
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        let locationArray = locations as NSArray
+        //Don't have a location yet
+        if location.coordinate.latitude == 0.0 && location.coordinate.longitude == 0.0 {
+            
+            location = locations[0] as CLLocation
+            
+            //Make sure location is set and not zero
+            if location.coordinate.latitude != 0.0 || location.coordinate.longitude != 0.0 {
         
-        let location = locationArray[0] as! CLLocation
-        
-        latitude = location.coordinate.latitude
-        
-        longitude = location.coordinate.longitude
-        
-        print("\(latitude) \(longitude)")
-        
-        //Need to not set to 0.0.  Is this right for startMonitoringSigChanges?
-        if latitude != 0.0 || longitude != 0.0 {
+            myLocationManager.stopUpdatingLocation()
             
-            locationManager.stopUpdatingLocation()
+            myLocationManager.startMonitoringSignificantLocationChanges()
             
-            locationManager.startMonitoringSignificantLocationChanges()
-            
-            getNowWeather(latitude, longitude: longitude)
-            
-        } else {
-            
-            print("Lat and long still 0.0")
-            
+            getNowWeather(location.coordinate.latitude, longitude: location.coordinate.longitude)
+                
+            } else {
+                
+                print("Error: Lat and Long still 0.0")
+                
+            }
         }
     }
     
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
             
-            print("Location manager didFailWithError: "+String(error))
+        print("Location manager didFailWithError: "+String(error))
+        
+        //Handle UI accordingly
             
+    }
+    
+    //Collect all the descriptions and update summary label
+    func appendDescriptions (weatherArray: NSArray){
+        
+        var description = ""
+
+        for item in weatherArray {
+            
+            let weatherDict = item as! NSDictionary
+            
+            if description == "" {
+                
+                description += weatherDict["description"] as! String
+                
+            } else {
+                
+                description = description + " & " + String(weatherDict["description"])
+                
+            }
+            
+            self.nowSummaryLabel.setText(description)
+            
+        }
+        
     }
     
     func getNowWeather(latitude: Double, longitude: Double) {
@@ -81,37 +102,15 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                 
                 do {
                     
-                    var jsonResult: NSDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+                    let jsonResult: NSDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
                     
-                    print(jsonResult)
-                    
-                    //Checking that the main and wind arrays exist.
+                    //Checking that the main and wind arrays exist.  IN FUTURE BREAK APART FOR SAFETY
                     if let main = jsonResult["main"] as? NSDictionary, wind = jsonResult["wind"] as? NSDictionary, weather = jsonResult["weather"] as? NSArray {
                         
                         //Getting all the weather conditions
-                        var summaryDescription = ""
+                        self.appendDescriptions(weather)
                         
-                        for item in weather {
-                            
-                            var weatherDict = item as! NSDictionary
-                            
-                            if summaryDescription == "" {
-                                
-                                summaryDescription += weatherDict["description"] as! String
-                                
-                            } else {
-                                
-                                summaryDescription = summaryDescription + " & " + String(weatherDict["description"])
-                                
-                            }
-                            
-                            print(summaryDescription)
-                            
-                        }
-                        
-                        self.nowSummaryLabel.setText(summaryDescription)
-                        
-                        //Checking that the fields we need exist.  DON'T KNOW HOW WEATHER WORKS
+                        //Checking that the fields we need exist.  IN FUTURE BREAK APART FOR SAFETY
                         if let temp = main["temp"] as? Int, humidity = main["humidity"] as? NSValue, windSpeed = wind["speed"] as? Int {
                             
                             self.nowTemperatureLabel.setText("\(temp)°")
@@ -152,10 +151,12 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestAlwaysAuthorization()
-        locationManager.startUpdatingLocation()
+        myLocationManager.delegate = self
+        myLocationManager.desiredAccuracy = kCLLocationAccuracyBest
+        myLocationManager.requestAlwaysAuthorization()
+        myLocationManager.startUpdatingLocation()
+        
+        //In the future create function to handle if user does not grant location access
         
         print("App launched")
     }

@@ -197,11 +197,11 @@
 		E3B5510A1B3F3ADD00C70DF1 /* Running Weather WatchKit 1 Extension */ = {
 			isa = PBXGroup;
 			children = (
-				E3B551391B4451E500C70DF1 /* Running Weather WatchKit 1 Extension.entitlements */,
 				E3B5510D1B3F3ADD00C70DF1 /* TodayInterfaceController.swift */,
 				E3B5512D1B3F400300C70DF1 /* ThisWeekInterfaceController.swift */,
 				E3B5510F1B3F3ADD00C70DF1 /* NotificationController.swift */,
 				E3B551111B3F3ADD00C70DF1 /* Assets.xcassets */,
+				E3B551391B4451E500C70DF1 /* Running Weather WatchKit 1 Extension.entitlements */,
 				E3B551131B3F3ADD00C70DF1 /* Info.plist */,
 				E3B5510B1B3F3ADD00C70DF1 /* Supporting Files */,
 			);
