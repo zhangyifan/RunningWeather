@@ -45,7 +45,7 @@
                         <outlet property="nowSummaryLabel" destination="RU8-Hd-csT" id="Eab-eb-cfC"/>
                         <outlet property="nowTemperatureLabel" destination="yat-MG-ghx" id="jM3-tA-5uq"/>
                         <outlet property="nowWindIcon" destination="aIC-o7-yHg" id="XMs-ir-igZ"/>
-                        <outlet property="nowWindLabel" destination="jbc-ZI-IPC" id="uQN-av-GcW"/>
+                        <outlet property="nowWindLabel" destination="jbc-ZI-IPC" id="wgr-q7-NGP"/>
                         <outlet property="nowWordLabel" destination="AMf-ki-uxg" id="dYn-m5-qDJ"/>
                         <segue destination="3H2-y0-u25" kind="relationship" relationship="nextPage" id="osj-T4-hB8"/>
                     </connections>

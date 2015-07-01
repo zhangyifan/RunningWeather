@@ -12,6 +12,8 @@ import CoreLocation
 
 class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate {
     
+    var defaults = NSUserDefaults(suiteName: "group.com.yifanz.RunningWeather")
+    
     @IBOutlet var nowWordLabel: WKInterfaceLabel!
     
     @IBOutlet var nowTemperatureLabel: WKInterfaceLabel!
@@ -26,16 +28,47 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     
     @IBOutlet var nowWindLabel: WKInterfaceLabel!
     
+    //NEED TO FIGURE OUT HOW TO NOT SET THIS
+    var latitude = 0.0
+    
+    var longitude = 0.0
+    
     let weatherAPIKey = "ef2c62731316105942e0658cb48dbbd5"
     
     var locationManager = CLLocationManager()
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        print(locations)
+        let locationArray = locations as NSArray
         
-        //***NEED TO STOP GETTING LOCATIONS, ONLY CURRENT ONE***
+        let location = locationArray[0] as! CLLocation
         
+        latitude = location.coordinate.latitude
+        
+        longitude = location.coordinate.longitude
+        
+        print("\(latitude) \(longitude)")
+        
+        //Need to not set to 0.0.  Is this right for startMonitoringSigChanges?
+        if latitude != 0.0 || longitude != 0.0 {
+            
+            locationManager.stopUpdatingLocation()
+            
+            locationManager.startMonitoringSignificantLocationChanges()
+            
+            getNowWeather(latitude, longitude: longitude)
+            
+        } else {
+            
+            print("Lat and long still 0.0")
+            
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+            
+            print("Location manager didFailWithError: "+String(error))
+            
     }
     
     func getNowWeather(latitude: Double, longitude: Double) {
@@ -46,26 +79,46 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
             
             if error == nil {
                 
-                //print(data)
-                
                 do {
                     
                     var jsonResult: NSDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
                     
                     print(jsonResult)
                     
-                    //Checking that the main and wind arrays exist.  ***NEED TO FIGURE OUT WEATHER DESCRIPTION ARRAY***
-                    if let main = jsonResult["main"] as? NSDictionary, wind = jsonResult["wind"] as? NSDictionary {
+                    //Checking that the main and wind arrays exist.
+                    if let main = jsonResult["main"] as? NSDictionary, wind = jsonResult["wind"] as? NSDictionary, weather = jsonResult["weather"] as? NSArray {
                         
-                        //Checking that the fields we need exist
-                        if let temp = main["temp"] as? NSValue, humidity = main["humidity"] as? NSValue, windSpeed = wind["speed"] as? NSValue {
+                        //Getting all the weather conditions
+                        var summaryDescription = ""
+                        
+                        for item in weather {
                             
-                            self.nowTemperatureLabel.setText("\(temp)")
+                            var weatherDict = item as! NSDictionary
+                            
+                            if summaryDescription == "" {
+                                
+                                summaryDescription += weatherDict["description"] as! String
+                                
+                            } else {
+                                
+                                summaryDescription = summaryDescription + " & " + String(weatherDict["description"])
+                                
+                            }
+                            
+                            print(summaryDescription)
+                            
+                        }
+                        
+                        self.nowSummaryLabel.setText(summaryDescription)
+                        
+                        //Checking that the fields we need exist.  DON'T KNOW HOW WEATHER WORKS
+                        if let temp = main["temp"] as? Int, humidity = main["humidity"] as? NSValue, windSpeed = wind["speed"] as? Int {
+                            
+                            self.nowTemperatureLabel.setText("\(temp)°")
                             
                             self.nowHumidityLabel.setText("\(humidity)%")
-
-                            //***NOTE NEED TO TURN WINDSPEED INTO INT TO SAVE SPACE***
-                            self.nowWindLabel.setText("\(windSpeed)")
+                            
+                            self.nowWindLabel.setText("\(windSpeed)mph")
                             
                         } else {
                             
@@ -98,8 +151,6 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
 
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
-        
-        getNowWeather(41.8369, longitude: -87.6847)
         
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
