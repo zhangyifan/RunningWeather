@@ -12,7 +12,8 @@ import Foundation
 
 class ThisWeekInterfaceController: WKInterfaceController {
 
-    //Need to create and connect table row controllers
+    @IBOutlet var weekTable: WKInterfaceTable!
+    
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)

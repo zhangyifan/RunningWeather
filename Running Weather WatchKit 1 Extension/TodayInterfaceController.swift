@@ -11,8 +11,7 @@ import Foundation
 import CoreLocation
 
 class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate {
-    
-    //NEED TO CREATE TABLE ROW CONTROLLERS AND CONNECT THEM
+
     var defaults = NSUserDefaults(suiteName: "group.com.yifanz.RunningWeather")
     
     @IBOutlet var nowWordLabel: WKInterfaceLabel!
@@ -29,7 +28,8 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     
     @IBOutlet var nowWindLabel: WKInterfaceLabel!
     
-    //CLLocation object - use that instead of latitude, longitude variables
+    @IBOutlet var todayTable: WKInterfaceTable!
+    
     var location = CLLocation(latitude: 0.0, longitude: 0.0)
     
     let weatherAPIKey = "ef2c62731316105942e0658cb48dbbd5"
@@ -52,6 +52,8 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
             
             getNowWeather(location.coordinate.latitude, longitude: location.coordinate.longitude)
                 
+            getHourlyWeather(location.coordinate.latitude, longitude: location.coordinate.longitude)
+                
             } else {
                 
                 print("Error: Lat and Long still 0.0")
@@ -68,8 +70,8 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
             
     }
     
-    //Collect all the descriptions and update summary label
-    func appendDescriptions (weatherArray: NSArray){
+    //Collect all the descriptions and return a summary
+    func appendDescriptions (weatherArray: NSArray) -> String {
         
         var description = ""
 
@@ -86,10 +88,77 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                 description = description + " & " + String(weatherDict["description"])
                 
             }
+        }
+        
+        return description
+        
+    }
+    
+    //Parse temperature, humidity and windspeed from JSON and print errors
+    func getWeatherValues(listDict: NSDictionary) -> (temperature: Int, humidity: Int, windSpeed: Int, description: String) {
+        
+        var temperature = 0
+        var humidity = 0
+        var windSpeed = 0
+        var description = ""
+        
+        if let main = listDict["main"] as? NSDictionary {
             
-            self.nowSummaryLabel.setText(description)
+            if let temp = main["temp"] as? Int {
+                
+                temperature = temp
+                
+            } else {
+                
+                print("Error with temp")
+                
+            }
+            
+            if let hum = main["humidity"] as? Int {
+                
+                humidity = hum
+                
+            } else {
+                
+                print("Error with humidity")
+                
+            }
+            
+        } else {
+            
+            print("Error with main in forecast")
             
         }
+        
+        if let wind = listDict["wind"] as? NSDictionary {
+            
+            if let speed = wind["speed"] as? Int {
+                
+                windSpeed = speed
+                
+            } else {
+                
+                print("Error with windspeed")
+                
+            }
+            
+        } else {
+            
+            print("Error with wind in forecast")
+            
+        }
+        
+        if let weather = listDict["weather"] as? NSArray {
+            
+            description = self.appendDescriptions(weather)
+            
+        } else {
+            
+            print("Error with weather array")
+            
+        }
+        
+        return (temperature, humidity, windSpeed, description)
         
     }
     
@@ -105,30 +174,59 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                     
                     let jsonResult: NSDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
                     
-                    //Checking that the main and wind arrays exist.  IN FUTURE BREAK APART FOR SAFETY
-                    if let main = jsonResult["main"] as? NSDictionary, wind = jsonResult["wind"] as? NSDictionary, weather = jsonResult["weather"] as? NSArray {
+                    let weatherValues = self.getWeatherValues(jsonResult)
+                    
+                    self.nowSummaryLabel.setText(weatherValues.description)
+         
+                    self.nowTemperatureLabel.setText("\(weatherValues.temperature)°")
+                            
+                    self.nowHumidityLabel.setText("\(weatherValues.humidity)%")
+                            
+                    self.nowWindLabel.setText("\(weatherValues.windSpeed)mph")
+                    
+                } catch {
+                    
+                    print("Error happened with JSON")
+                    
+                }
+                
+            } else {
+                
+                print(error)
+                
+            }
+        }
+        
+        task!.resume()
+        
+    }
+    
+    func getHourlyWeather(latitude: Double, longitude: Double) {
+        
+        let url = NSURL(string: "http://api.openweathermap.org/data/2.5/forecast?lat=\(latitude)&lon=\(longitude)&units=imperial&APPID="+weatherAPIKey)
+        
+        let task = NSURLSession.sharedSession().dataTaskWithURL(url!) { (data, response, error) -> Void in
+            
+            if error == nil {
+                
+                do {
+                    
+                    let jsonResult: NSDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+                    
+                    //Checking that the list array exists
+                    if let list = jsonResult["list"] as? NSArray {
                         
-                        //Getting all the weather conditions
-                        self.appendDescriptions(weather)
-                        
-                        //Checking that the fields we need exist.  IN FUTURE BREAK APART FOR SAFETY
-                        if let temp = main["temp"] as? Int, humidity = main["humidity"] as? NSValue, windSpeed = wind["speed"] as? Int {
+                        for item in list {
                             
-                            self.nowTemperatureLabel.setText("\(temp)°")
+                            let listDict = item as! NSDictionary
                             
-                            self.nowHumidityLabel.setText("\(humidity)%")
-                            
-                            self.nowWindLabel.setText("\(windSpeed)mph")
-                            
-                        } else {
-                            
-                            print("Error with main or wind values inside")
+                            let weatherValues = self.getWeatherValues(listDict)
                             
                         }
                         
                     } else {
                         
-                        print("Error with main or wind arrays")
+                        print("Error with list array")
                         
                     }
                     
@@ -158,6 +256,13 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         myLocationManager.startUpdatingLocation()
         
         //In the future create function to handle if user does not grant location access
+        
+        //Set up Today table
+        todayTable.setNumberOfRows(8, withRowType: "todayTableRowController")
+        
+        let todayRow = todayTable.rowControllerAtIndex(0) as! todayTableRowController
+        
+        todayRow.qualityTodayLabel.setText("Hello!")
         
         print("App launched")
     }

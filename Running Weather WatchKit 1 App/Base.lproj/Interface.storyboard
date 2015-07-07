@@ -40,7 +40,7 @@
                         </group>
                         <table alignment="left" id="CgT-2g-pSn">
                             <items>
-                                <tableRow id="EtP-lh-wKh">
+                                <tableRow identifier="todayTableRowController" id="EtP-lh-wKh" customClass="todayTableRowController" customModule="Running_Weather_WatchKit_1_Extension">
                                     <group key="rootItem" width="1" alignment="left" id="DfA-9D-KmK">
                                         <items>
                                             <imageView width="25" height="1" alignment="left" id="CXJ-AY-z3i"/>
@@ -57,6 +57,13 @@
                                             <imageView width="15" height="0.29999999999999999" alignment="right" image="wind.png" contentMode="scaleAspectFit" id="Z1F-8Y-z7Y"/>
                                         </items>
                                     </group>
+                                    <connections>
+                                        <outlet property="barTodayImage" destination="CXJ-AY-z3i" id="LCR-V7-FR0"/>
+                                        <outlet property="humidityTodayImage" destination="FhA-BH-UCw" id="Szf-6E-9Np"/>
+                                        <outlet property="qualityTodayLabel" destination="Q7L-P0-1kl" id="QyM-pk-aHc"/>
+                                        <outlet property="timeTempTodayLabel" destination="xBS-oh-P6q" id="T7A-y0-J2m"/>
+                                        <outlet property="windTodayImage" destination="Z1F-8Y-z7Y" id="gtl-8i-US0"/>
+                                    </connections>
                                 </tableRow>
                             </items>
                         </table>
@@ -69,6 +76,7 @@
                         <outlet property="nowWindIcon" destination="aIC-o7-yHg" id="XMs-ir-igZ"/>
                         <outlet property="nowWindLabel" destination="jbc-ZI-IPC" id="wgr-q7-NGP"/>
                         <outlet property="nowWordLabel" destination="AMf-ki-uxg" id="dYn-m5-qDJ"/>
+                        <outlet property="todayTable" destination="CgT-2g-pSn" id="zl4-6w-aVy"/>
                         <segue destination="3H2-y0-u25" kind="relationship" relationship="nextPage" id="osj-T4-hB8"/>
                     </connections>
                 </controller>
@@ -82,21 +90,30 @@
                     <items>
                         <table alignment="left" id="Pqz-WP-SRm">
                             <items>
-                                <tableRow id="4v3-iq-vYe">
+                                <tableRow identifier="weekTableRowController" id="4v3-iq-vYe" customClass="weekTableRowController" customModule="Running_Weather_WatchKit_1_Extension">
                                     <group key="rootItem" width="1" alignment="left" id="lap-Jm-CNh">
                                         <items>
                                             <label alignment="left" verticalAlignment="center" text="SAT" id="UaY-dX-34O">
                                                 <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             </label>
-                                            <label alignment="left" verticalAlignment="center" text="Best!" id="nXG-Yl-46D"/>
+                                            <label alignment="left" verticalAlignment="center" text="3pm" id="nXG-Yl-46D"/>
                                             <label alignment="right" verticalAlignment="center" text="70°" textAlignment="right" id="eV3-HV-r8d"/>
                                             <imageView width="0.14999999999999999" height="0.5" alignment="right" verticalAlignment="center" image="04d.png" contentMode="scaleAspectFit" id="1Cx-Nl-PRw"/>
                                         </items>
                                     </group>
+                                    <connections>
+                                        <outlet property="TempWeekLabel" destination="eV3-HV-r8d" id="Ara-Ir-zSX"/>
+                                        <outlet property="conditionWeekImage" destination="1Cx-Nl-PRw" id="aYx-ZK-FKw"/>
+                                        <outlet property="dayWeekLabel" destination="UaY-dX-34O" id="20t-tG-e2y"/>
+                                        <outlet property="qualityWeekLabel" destination="nXG-Yl-46D" id="Svb-zX-PEx"/>
+                                    </connections>
                                 </tableRow>
                             </items>
                         </table>
                     </items>
+                    <connections>
+                        <outlet property="weekTable" destination="Pqz-WP-SRm" id="Kli-T0-MN3"/>
+                    </connections>
                 </controller>
             </objects>
             <point key="canvasLocation" x="450" y="346"/>
