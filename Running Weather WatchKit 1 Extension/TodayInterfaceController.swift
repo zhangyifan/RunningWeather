@@ -30,11 +30,15 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     
     @IBOutlet var todayTable: WKInterfaceTable!
     
+    let maxTodayRows = 8
+    
     var location = CLLocation(latitude: 0.0, longitude: 0.0)
     
     let weatherAPIKey = "ef2c62731316105942e0658cb48dbbd5"
     
     var myLocationManager = CLLocationManager()
+    
+    var hourlyWeatherArr: [Dictionary<String, Int>] = []
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
@@ -70,7 +74,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
             
     }
     
-    //Collect all the descriptions and return a summary
+    //Collect all the descriptions and return a summary of weather
     func appendDescriptions (weatherArray: NSArray) -> String {
         
         var description = ""
@@ -94,7 +98,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         
     }
     
-    //Parse temperature, humidity and windspeed from JSON and print errors
+    //Parse temperature, humidity, windspeed and description from JSON and print errors
     func getWeatherValues(listDict: NSDictionary) -> (temperature: Int, humidity: Int, windSpeed: Int, description: String) {
         
         var temperature = 0
@@ -162,6 +166,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         
     }
     
+    //Set the labels for current weather conditions
     func getNowWeather(latitude: Double, longitude: Double) {
         
         let url = NSURL(string: "http://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&units=imperial&APPID="+weatherAPIKey)
@@ -201,6 +206,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         
     }
     
+    //Update hourlyWeatherArr with hourly weather conditions
     func getHourlyWeather(latitude: Double, longitude: Double) {
         
         let url = NSURL(string: "http://api.openweathermap.org/data/2.5/forecast?lat=\(latitude)&lon=\(longitude)&units=imperial&APPID="+weatherAPIKey)
@@ -208,7 +214,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         let task = NSURLSession.sharedSession().dataTaskWithURL(url!) { (data, response, error) -> Void in
             
             if error == nil {
-                
+    
                 do {
                     
                     let jsonResult: NSDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
@@ -221,6 +227,29 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                             let listDict = item as! NSDictionary
                             
                             let weatherValues = self.getWeatherValues(listDict)
+                            
+                            //Need to get date time values processed
+                            
+                            let values = ["temp":weatherValues.temperature, "humidity":weatherValues.humidity, "wind":weatherValues.windSpeed]
+                            
+                            self.hourlyWeatherArr.append(values)
+                            
+                            if self.hourlyWeatherArr.count > self.maxTodayRows {
+                                
+                                //MIGHT WANT TO MOVE TO SEPARATE FUNCTION
+                                for var i = 0; i < self.maxTodayRows; i++ {
+                                    
+                                    let todayRow = self.todayTable.rowControllerAtIndex(i) as! todayTableRowController
+                                    
+                                    let weatherDict = self.hourlyWeatherArr[i]
+                                    
+                                    let rowTemp = weatherDict["temp"]
+                                    
+                                    todayRow.timeTempTodayLabel.setText("1pm | \(rowTemp!)°")
+                                    
+                                }
+            
+                            }
                             
                         }
                         
@@ -245,6 +274,8 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         
         task!.resume()
         
+        
+        
     }
 
     override func awakeWithContext(context: AnyObject?) {
@@ -258,11 +289,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         //In the future create function to handle if user does not grant location access
         
         //Set up Today table
-        todayTable.setNumberOfRows(8, withRowType: "todayTableRowController")
-        
-        let todayRow = todayTable.rowControllerAtIndex(0) as! todayTableRowController
-        
-        todayRow.qualityTodayLabel.setText("Hello!")
+        todayTable.setNumberOfRows(maxTodayRows, withRowType: "todayTableRowController")
         
         print("App launched")
     }
