@@ -189,6 +189,10 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                             
                     self.nowWindLabel.setText("\(weatherValues.windSpeed)mph")
                     
+                    self.nowHumidityIcon.setImageNamed(self.chooseHumidityImage(weatherValues.humidity))
+                    
+                    self.nowWindIcon.setImageNamed(self.chooseWindImage(weatherValues.windSpeed))
+                    
                 } catch {
                     
                     print("Error happened with JSON")
@@ -252,9 +256,6 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                                     todayRow.timeTempTodayLabel.setText("1pm | \(rowTemp!)°")
                                     
                                     todayRow.windTodayImage.setImageNamed(rowWindImage+".png")
-                                    
-                                    print(weatherDict["humidity"])
-                                    print(rowHumidityImage+".png")
                                     
                                     todayRow.humidityTodayImage.setImageNamed(rowHumidityImage+".png")
                                     
