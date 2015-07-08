@@ -38,7 +38,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     
     var myLocationManager = CLLocationManager()
     
-    var hourlyWeatherArr: [Dictionary<String, Int>] = []
+    var hourlyWeatherArr: [Dictionary<String, Double>] = []
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
@@ -98,17 +98,18 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         
     }
     
-    //Parse temperature, humidity, windspeed and description from JSON and print errors
-    func getWeatherValues(listDict: NSDictionary) -> (temperature: Int, humidity: Int, windSpeed: Int, description: String) {
+    //Parse temperature, humidity, windspeed, description and datetime from JSON and print errors
+    func getWeatherValues(listDict: NSDictionary) -> (temperature: Double, humidity: Double, windSpeed: Double, description: String, dt: Double) {
         
-        var temperature = 0
-        var humidity = 0
-        var windSpeed = 0
+        var temperature = 0.0
+        var humidity = 0.0
+        var windSpeed = 0.0
         var description = ""
+        var dt = 0.0
         
         if let main = listDict["main"] as? NSDictionary {
             
-            if let temp = main["temp"] as? Int {
+            if let temp = main["temp"] as? Double {
                 
                 temperature = temp
                 
@@ -118,7 +119,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                 
             }
             
-            if let hum = main["humidity"] as? Int {
+            if let hum = main["humidity"] as? Double {
                 
                 humidity = hum
                 
@@ -136,7 +137,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         
         if let wind = listDict["wind"] as? NSDictionary {
             
-            if let speed = wind["speed"] as? Int {
+            if let speed = wind["speed"] as? Double {
                 
                 windSpeed = speed
                 
@@ -162,7 +163,38 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
             
         }
         
-        return (temperature, humidity, windSpeed, description)
+        if let datetime = listDict["dt"] as? Double {
+            
+            dt = datetime
+            
+        } else {
+            
+            print("Error with datetime")
+            
+        }
+        
+        return (temperature, humidity, windSpeed, description, dt)
+        
+    }
+    
+    //Convert Unix datetime into usable day of week and hour strings
+    func convertDT(dt: Double) -> (day: String, hour: String) {
+        
+        let date = NSDate(timeIntervalSince1970: dt)
+        
+        let dayFormatter = NSDateFormatter()
+        dayFormatter.dateFormat = "E"
+        dayFormatter.timeZone = NSTimeZone()
+        
+        let timeFormatter = NSDateFormatter()
+        timeFormatter.dateFormat = "ha"
+        timeFormatter.timeZone = NSTimeZone()
+        
+        
+        let localDay = dayFormatter.stringFromDate(date)
+        let localTime = timeFormatter.stringFromDate(date)
+        
+        return (localDay, localTime)
         
     }
     
@@ -183,11 +215,11 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                     
                     self.nowSummaryLabel.setText(weatherValues.description)
          
-                    self.nowTemperatureLabel.setText("\(weatherValues.temperature)°")
+                    self.nowTemperatureLabel.setText("\(Int(weatherValues.temperature))°")
                             
-                    self.nowHumidityLabel.setText("\(weatherValues.humidity)%")
+                    self.nowHumidityLabel.setText("\(Int(weatherValues.humidity))%")
                             
-                    self.nowWindLabel.setText("\(weatherValues.windSpeed)mph")
+                    self.nowWindLabel.setText("\(Int(weatherValues.windSpeed))mph")
                     
                     self.nowHumidityIcon.setImageNamed(self.chooseHumidityImage(weatherValues.humidity))
                     
@@ -232,15 +264,13 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                             
                             let weatherValues = self.getWeatherValues(listDict)
                             
-                            //Need to get date time values processed
-                            
-                            let values = ["temp":weatherValues.temperature, "humidity":weatherValues.humidity, "wind":weatherValues.windSpeed]
+                            let values = ["temp":weatherValues.temperature, "humidity":weatherValues.humidity, "wind":weatherValues.windSpeed, "dt":weatherValues.dt]
                             
                             self.hourlyWeatherArr.append(values)
                             
                             if self.hourlyWeatherArr.count > self.maxTodayRows {
                                 
-                                //MIGHT WANT TO MOVE TO SEPARATE FUNCTION
+                                //MIGHT WANT TO MOVE TO SEPARATE FUNCTION?
                                 for var i = 0; i < self.maxTodayRows; i++ {
                                     
                                     let todayRow = self.todayTable.rowControllerAtIndex(i) as! todayTableRowController
@@ -253,7 +283,9 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                                     
                                     let rowHumidityImage = self.chooseHumidityImage(weatherDict["humidity"]!)
                                     
-                                    todayRow.timeTempTodayLabel.setText("1pm | \(rowTemp!)°")
+                                    let rowDT = self.convertDT(weatherDict["dt"]!)
+                                    
+                                    todayRow.timeTempTodayLabel.setText(rowDT.hour+" | \(Int(rowTemp!))°")
                                     
                                     todayRow.windTodayImage.setImageNamed(rowWindImage+".png")
                                     
@@ -289,7 +321,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     }
     
     //Return the right wind image name
-    func chooseWindImage(windSpeed: Int) -> String {
+    func chooseWindImage(windSpeed: Double) -> String {
         
         if windSpeed < 6 {
             
@@ -307,7 +339,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     }
     
     //Return the right humidity image name
-    func chooseHumidityImage(humidity: Int) -> String {
+    func chooseHumidityImage(humidity: Double) -> String {
         
         if humidity < 45 {
             
