@@ -206,7 +206,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         
     }
     
-    //Update hourlyWeatherArr with hourly weather conditions
+    //Update hourlyWeatherArr with hourly weather conditions, update Today table
     func getHourlyWeather(latitude: Double, longitude: Double) {
         
         let url = NSURL(string: "http://api.openweathermap.org/data/2.5/forecast?lat=\(latitude)&lon=\(longitude)&units=imperial&APPID="+weatherAPIKey)
@@ -245,7 +245,18 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                                     
                                     let rowTemp = weatherDict["temp"]
                                     
+                                    let rowWindImage = self.chooseWindImage(weatherDict["wind"]!)
+                                    
+                                    let rowHumidityImage = self.chooseHumidityImage(weatherDict["humidity"]!)
+                                    
                                     todayRow.timeTempTodayLabel.setText("1pm | \(rowTemp!)°")
+                                    
+                                    todayRow.windTodayImage.setImageNamed(rowWindImage+".png")
+                                    
+                                    print(weatherDict["humidity"])
+                                    print(rowHumidityImage+".png")
+                                    
+                                    todayRow.humidityTodayImage.setImageNamed(rowHumidityImage+".png")
                                     
                                 }
             
@@ -273,9 +284,43 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         }
         
         task!.resume()
+    
+    }
+    
+    //Return the right wind image name
+    func chooseWindImage(windSpeed: Int) -> String {
         
+        if windSpeed < 6 {
+            
+            return "wind_low"
+            
+        } else if windSpeed < 16 {
+            
+            return "wind_medium"
+            
+        } else {
+            
+            return "wind_high"
+        }
         
+    }
+    
+    //Return the right humidity image name
+    func chooseHumidityImage(humidity: Int) -> String {
         
+        if humidity < 45 {
+            
+            return "humidity_low"
+            
+        } else if humidity < 70 {
+            
+            return "humidity_medium"
+            
+        } else {
+            
+            return "humidity_high"
+            
+        }
     }
 
     override func awakeWithContext(context: AnyObject?) {

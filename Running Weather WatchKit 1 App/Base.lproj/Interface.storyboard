@@ -32,9 +32,9 @@
                         </group>
                         <group width="1" height="37" alignment="left" id="6JB-IX-AdR">
                             <items>
-                                <imageView width="30" height="30" alignment="left" verticalAlignment="center" image="humidity.png" id="6r7-kl-T4N"/>
+                                <imageView width="30" height="30" alignment="left" verticalAlignment="center" image="humidity_medium.png" id="6r7-kl-T4N"/>
                                 <label alignment="left" verticalAlignment="center" text="0%" id="nT3-zI-3z7"/>
-                                <imageView width="30" height="30" alignment="right" verticalAlignment="center" image="wind.png" id="aIC-o7-yHg"/>
+                                <imageView width="30" height="30" alignment="right" verticalAlignment="center" image="wind_medium.png" id="aIC-o7-yHg"/>
                                 <label alignment="right" verticalAlignment="center" text="3m/h" id="jbc-ZI-IPC"/>
                             </items>
                         </group>
@@ -53,8 +53,8 @@
                                                     <label alignment="left" text="Perfect!" id="Q7L-P0-1kl"/>
                                                 </items>
                                             </group>
-                                            <imageView width="15" height="0.29999999999999999" alignment="right" image="humidity.png" contentMode="scaleAspectFit" id="FhA-BH-UCw"/>
-                                            <imageView width="15" height="0.29999999999999999" alignment="right" image="wind.png" contentMode="scaleAspectFit" id="Z1F-8Y-z7Y"/>
+                                            <imageView width="15" height="0.29999999999999999" alignment="right" image="humidity_high.png" contentMode="scaleAspectFit" id="FhA-BH-UCw"/>
+                                            <imageView width="15" height="0.29999999999999999" alignment="right" image="wind_high.png" contentMode="scaleAspectFit" id="Z1F-8Y-z7Y"/>
                                         </items>
                                     </group>
                                     <connections>
