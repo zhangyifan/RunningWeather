@@ -10,6 +10,8 @@ import WatchKit
 import Foundation
 import CoreLocation
 
+var hourlyWeatherArr: [Dictionary<String, Double>] = []
+
 class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate {
 
     var defaults = NSUserDefaults(suiteName: "group.com.yifanz.RunningWeather")
@@ -37,8 +39,6 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     let weatherAPIKey = "ef2c62731316105942e0658cb48dbbd5"
     
     var myLocationManager = CLLocationManager()
-    
-    var hourlyWeatherArr: [Dictionary<String, Double>] = []
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
@@ -89,7 +89,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                 
             } else {
                 
-                description = description + " & " + String(weatherDict["description"])
+                description = description + " & " + String(weatherDict["description"]!)
                 
             }
         }
@@ -114,7 +114,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                 temperature = temp
                 
             } else {
-                
+    
                 print("Error with temp")
                 
             }
@@ -173,6 +173,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
             
         }
         
+        //IN FUTURE NEED TO HANDLE IF ANY OF THESE ARE STILL ZERO BC OF ISSUES, WE LATER ASSUME ALL IS FINE
         return (temperature, humidity, windSpeed, description, dt)
         
     }
@@ -221,9 +222,11 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                             
                     self.nowWindLabel.setText("\(Int(weatherValues.windSpeed))mph")
                     
-                    self.nowHumidityIcon.setImageNamed(self.chooseHumidityImage(weatherValues.humidity))
+                    self.nowHumidityIcon.setImageNamed(self.getHumidityLevel(weatherValues.humidity)+".png")
                     
-                    self.nowWindIcon.setImageNamed(self.chooseWindImage(weatherValues.windSpeed))
+                    self.nowWindIcon.setImageNamed(self.getWindLevel(weatherValues.windSpeed)+".png")
+                    
+                    self.nowWordLabel.setText(self.assignQuality(weatherValues.temperature, humidity: weatherValues.humidity, wind: weatherValues.windSpeed))
                     
                 } catch {
                     
@@ -266,30 +269,32 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                             
                             let values = ["temp":weatherValues.temperature, "humidity":weatherValues.humidity, "wind":weatherValues.windSpeed, "dt":weatherValues.dt]
                             
-                            self.hourlyWeatherArr.append(values)
+                            hourlyWeatherArr.append(values)
                             
-                            if self.hourlyWeatherArr.count > self.maxTodayRows {
+                            if hourlyWeatherArr.count > self.maxTodayRows {
                                 
                                 //MIGHT WANT TO MOVE TO SEPARATE FUNCTION?
                                 for var i = 0; i < self.maxTodayRows; i++ {
                                     
                                     let todayRow = self.todayTable.rowControllerAtIndex(i) as! todayTableRowController
                                     
-                                    let weatherDict = self.hourlyWeatherArr[i]
+                                    let weatherDict = hourlyWeatherArr[i]
                                     
-                                    let rowTemp = weatherDict["temp"]
+                                    let rowTemp = weatherDict["temp"]!
                                     
-                                    let rowWindImage = self.chooseWindImage(weatherDict["wind"]!)
+                                    let rowWindImage = self.getWindLevel(weatherDict["wind"]!)
                                     
-                                    let rowHumidityImage = self.chooseHumidityImage(weatherDict["humidity"]!)
+                                    let rowHumidityImage = self.getHumidityLevel(weatherDict["humidity"]!)
                                     
                                     let rowDT = self.convertDT(weatherDict["dt"]!)
                                     
-                                    todayRow.timeTempTodayLabel.setText(rowDT.hour+" | \(Int(rowTemp!))°")
+                                    todayRow.timeTempTodayLabel.setText(rowDT.hour+" | \(Int(rowTemp))°")
                                     
                                     todayRow.windTodayImage.setImageNamed(rowWindImage+".png")
                                     
                                     todayRow.humidityTodayImage.setImageNamed(rowHumidityImage+".png")
+                                    
+                                    todayRow.qualityTodayLabel.setText(self.assignQuality(rowTemp, humidity: weatherDict["humidity"]!, wind: weatherDict["wind"]!))
                                     
                                 }
             
@@ -321,7 +326,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     }
     
     //Return the right wind image name
-    func chooseWindImage(windSpeed: Double) -> String {
+    func getWindLevel(windSpeed: Double) -> String {
         
         if windSpeed < 6 {
             
@@ -339,19 +344,98 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     }
     
     //Return the right humidity image name
-    func chooseHumidityImage(humidity: Double) -> String {
+    func getHumidityLevel(humidity: Double) -> String {
         
-        if humidity < 45 {
+        if humidity < 60 {
             
             return "humidity_low"
             
-        } else if humidity < 70 {
+        } else if humidity < 80 {
             
             return "humidity_medium"
             
         } else {
             
             return "humidity_high"
+            
+        }
+    }
+    
+    //Assign quality of running weather  NEED TO FACTOR IN PRECIPITATION
+    func assignQuality(temp: Double, humidity: Double, wind: Double) -> String {
+        
+        let humidityLevel = self.getHumidityLevel(humidity)
+        
+        let windLevel = self.getWindLevel(wind)
+        
+        //Hot temperatures
+        if temp > 70.0 {
+            
+            if temp > 95.0 {
+                
+                return "Terrible"
+                
+            } else if temp > 85.0 && temp <= 95.0 {
+                
+                if humidityLevel == "humidity_low" {
+                    
+                    if windLevel == "wind_medium" {
+                        
+                        return "Ok"
+                        
+                    } else {
+                        
+                        return "Poor"
+                        
+                    }
+                } else {
+                    
+                    return "Terrible"
+                    
+                }
+            } else {
+                
+                if humidityLevel == "humidity_low" {
+                    
+                    if windLevel == "wind_medium" {
+                        
+                        return "Perfect"
+                        
+                    } else {
+                        
+                        return "Good"
+                        
+                    }
+                    
+                } else if humidityLevel == "humidity_medium" {
+                    
+                    if windLevel == "wind_medium" {
+                        
+                        return "Good"
+                        
+                    } else {
+                        
+                        return "Ok"
+                    }
+                    
+                } else {
+                    
+                    return "Poor"
+                    
+                }
+            }
+        }
+        
+        //Cold temperatures  NEED TO FINISH COLD AND IDEAL TEMPERATURES
+        else if temp < 40.0 {
+            
+            return "Cold"
+        }
+        
+        //Ideal temperatures (40-70 degrees)
+        else {
+            
+            return "Ideal"
             
         }
     }

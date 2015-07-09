@@ -14,11 +14,18 @@ class ThisWeekInterfaceController: WKInterfaceController {
 
     @IBOutlet var weekTable: WKInterfaceTable!
     
-    
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         
-        // Configure interface objects here.
+        //Set up week table
+        weekTable.setNumberOfRows(8, withRowType: "weekTableRowController")
+        
+        /*Checking if global variables and functions work
+        var array = hourlyWeatherArr as NSArray
+        
+        var string = TodayInterfaceController.appendDescriptions(array)*/
+        
+        print("Week page launched")
     }
 
     override func willActivate() {
