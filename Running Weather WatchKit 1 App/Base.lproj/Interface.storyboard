@@ -102,10 +102,10 @@
                                         </items>
                                     </group>
                                     <connections>
-                                        <outlet property="TempWeekLabel" destination="eV3-HV-r8d" id="Ara-Ir-zSX"/>
                                         <outlet property="conditionWeekImage" destination="1Cx-Nl-PRw" id="aYx-ZK-FKw"/>
-                                        <outlet property="dayWeekLabel" destination="UaY-dX-34O" id="20t-tG-e2y"/>
-                                        <outlet property="qualityWeekLabel" destination="nXG-Yl-46D" id="Svb-zX-PEx"/>
+                                        <outlet property="dayWeekLabel" destination="UaY-dX-34O" id="c1S-TH-kqq"/>
+                                        <outlet property="hourWeekLabel" destination="nXG-Yl-46D" id="zL6-qD-MZo"/>
+                                        <outlet property="tempWeekLabel" destination="eV3-HV-r8d" id="lNK-bR-ZLs"/>
                                     </connections>
                                 </tableRow>
                             </items>

@@ -10,12 +10,12 @@ import UIKit
 import WatchKit
 
 class weekTableRowController: NSObject {
-
+    
     @IBOutlet var dayWeekLabel: WKInterfaceLabel!
     
-    @IBOutlet var qualityWeekLabel: WKInterfaceLabel!
+    @IBOutlet var hourWeekLabel: WKInterfaceLabel!
     
-    @IBOutlet var TempWeekLabel: WKInterfaceLabel!
+    @IBOutlet var tempWeekLabel: WKInterfaceLabel!
     
     @IBOutlet var conditionWeekImage: WKInterfaceImage!
     
