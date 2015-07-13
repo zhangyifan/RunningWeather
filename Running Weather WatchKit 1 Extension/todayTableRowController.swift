@@ -10,7 +10,7 @@ import UIKit
 import WatchKit
 
 class todayTableRowController: NSObject {
-
+    
     @IBOutlet var barTodayImage: WKInterfaceImage!
     
     @IBOutlet var timeTempTodayLabel: WKInterfaceLabel!

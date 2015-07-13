@@ -15,17 +15,65 @@ class ThisWeekInterfaceController: WKInterfaceController {
     @IBOutlet var weekTable: WKInterfaceTable!
     
     //Function to pick the best weather in a given period of time
-    class func getBestWeather(startIndex: Int, endIndex: Int) {
+    class func getBestWeather(startIndex: Int, endIndex: Int) -> (indexArr: [Int], qualityName: String){
         
-        //NEED TO FINISH, START AND END ARE FOR WEATHERARRAY TO COMPARE
+        //Arrays of indexes of various weather qualities
+        var perfectArr:[Int] = []
+        var goodArr:[Int] = []
+        var okArr:[Int] = []
+        var poorArr:[Int] = []
+        var terribleArr:[Int] = []
+
         for var i = startIndex; i <= endIndex; i++ {
             
-            let weatherDict = hourlyWeatherArr[i]
+            let weatherItem = hourlyWeatherArr[i]
             
-            let quality = TodayInterfaceController.assignQuality(weatherDict["temp"]!, humidity: weatherDict["humidity"]!, wind: weatherDict["wind"]! )
+            let quality = TodayInterfaceController.assignQuality(weatherItem.temp, humidity: weatherItem.humidity, wind: weatherItem.windSpeed )
             
+            if quality == "Perfect" {
+                
+                perfectArr.append(i)
+                
+            } else if quality == "Good" {
+                
+                goodArr.append(i)
+                
+            } else if quality == "OK" {
+                
+                okArr.append(i)
+                
+            } else if quality == "Poor" {
+                
+                poorArr.append(i)
+                
+            } else {
+                
+                terribleArr.append(i)
+                
+            }
         }
         
+        if perfectArr.count > 0 {
+            
+            return (perfectArr, "Perfect")
+            
+        } else if goodArr.count > 0 {
+            
+            return (goodArr, "Good")
+            
+        } else if okArr.count > 0 {
+            
+            return (okArr, "Ok")
+            
+        } else if poorArr.count > 0 {
+            
+            return (goodArr, "Good")
+            
+        } else {
+            
+            return (terribleArr, "Terrible")
+            
+        }
     }
     
     override func awakeWithContext(context: AnyObject?) {
@@ -37,25 +85,27 @@ class ThisWeekInterfaceController: WKInterfaceController {
         super.willActivate()
         
         //Set up week table
-        weekTable.setNumberOfRows(8, withRowType: "weekTableRowController")
+        var bestWeather = ThisWeekInterfaceController.getBestWeather(8, endIndex: 39)
+        
+        weekTable.setNumberOfRows(bestWeather.indexArr.count, withRowType: "weekTableRowController")
         
         if hourlyWeatherArr.count > 0 {
             
-            for var i = 0; i < 8; i++ {
+            for var i = 0; i < bestWeather.indexArr.count; i++ {
                 
                 let weekRow = self.weekTable.rowControllerAtIndex(i) as! weekTableRowController
                 
-                let weatherDict = hourlyWeatherArr[i]
+                let weatherItem = hourlyWeatherArr[bestWeather.indexArr[i]]
                 
-                let rowTemp = weatherDict["temp"]!
+                weekRow.tempWeekLabel.setText("\(weatherItem.temp)°")
                 
-                weekRow.tempWeekLabel.setText("\(Int(rowTemp))°")
-                
-                let rowDT = TodayInterfaceController.convertDT(weatherDict["dt"]!)
+                let rowDT = TodayInterfaceController.convertDT(weatherItem.dateTime)
                 
                 weekRow.dayWeekLabel.setText(rowDT.day)
                 
                 weekRow.hourWeekLabel.setText(rowDT.hour)
+                
+                weekRow.conditionWeekImage.setImageNamed(weatherItem.icon+".png")
                 
             }
             

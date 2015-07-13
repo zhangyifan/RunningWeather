@@ -10,11 +10,43 @@ import WatchKit
 import Foundation
 import CoreLocation
 
-var hourlyWeatherArr: [Dictionary<String, Double>] = []
+//Our main weather object, per hour
+class Weather {
+    
+    var dateTime: NSDate
+    var temp: Int
+    var humidity: Int
+    var windSpeed: Double
+    var clouds: Int
+    var rain: Double
+    var snow: Double
+    var description: String
+    var icon: String
+    var quality: String
+    
+    init(dateTime: NSDate, temp: Int, humidity: Int, windSpeed: Double, clouds: Int, rain: Double, snow: Double, description: String, icon: String, quality: String) {
+        
+        self.dateTime = dateTime
+        self.temp = temp
+        self.humidity = humidity
+        self.windSpeed = windSpeed
+        self.clouds = clouds
+        self.rain = rain
+        self.snow = snow
+        self.description = description
+        self.icon = icon
+        self.quality = quality
+    }
+}
+
+//Our stored weather array for next 5 days, by 3 hour increments
+var hourlyWeatherArr: [Weather] = []
 
 class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate {
 
     var defaults = NSUserDefaults(suiteName: "group.com.yifanz.RunningWeather")
+    
+    @IBOutlet var topGroup: WKInterfaceGroup!
     
     @IBOutlet var nowWordLabel: WKInterfaceLabel!
     
@@ -74,10 +106,11 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
             
     }
     
-    //Collect all the descriptions and return a summary of weather
-    func appendDescriptions (weatherArray: NSArray) -> String {
+    //Collect all the descriptions and return a summary of weather, plus array of icons.  COULD BE BETTER WITH MORE ERROR HANDLING IF DESCRIPTION OR ICON IS NULL
+    func appendDescriptionsAndIcons (weatherArray: NSArray) -> (descriptionStr:String, iconArr:[String]) {
         
         var description = ""
+        var icon:[String] = []
 
         for item in weatherArray {
             
@@ -92,96 +125,136 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                 description = description + " & " + String(weatherDict["description"]!)
                 
             }
+            
+            //Replace night with day because icons are the same to save storage
+            var thisIcon = weatherDict["icon"] as! String
+            
+            if thisIcon.rangeOfString("n") != nil {
+                
+                if thisIcon.rangeOfString("01") == nil && thisIcon.rangeOfString("02") == nil {
+                    
+                    thisIcon = thisIcon.stringByReplacingOccurrencesOfString("n", withString: "d")
+                    
+                }
+            }
+            
+            icon.append(thisIcon)
         }
         
-        return description
+        return (description, icon)
         
     }
     
     //Parse temperature, humidity, windspeed, description and datetime from JSON and print errors
-    func getWeatherValues(listDict: NSDictionary) -> (temperature: Double, humidity: Double, windSpeed: Double, description: String, dt: Double) {
+    func getWeatherValues(listDict: NSDictionary) -> Weather {
         
-        var temperature = 0.0
-        var humidity = 0.0
+        var dateTime = NSDate()
+        var temp = 0
+        var humidity = 0
         var windSpeed = 0.0
+        var clouds = 0
+        var rain = 0.0
+        var snow = 0.0
         var description = ""
-        var dt = 0.0
+        var icon = ""
+        var quality = ""
+        
+        if let dt = listDict["dt"] as? Double {
+            
+            dateTime = NSDate(timeIntervalSince1970: dt)
+            
+        } else {
+            print("Error with datetime")
+        }
         
         if let main = listDict["main"] as? NSDictionary {
             
-            if let temp = main["temp"] as? Double {
-                
-                temperature = temp
-                
+            if let temperature = main["temp"] as? Int {
+                temp = temperature
             } else {
-    
                 print("Error with temp")
-                
             }
             
-            if let hum = main["humidity"] as? Double {
-                
+            if let hum = main["humidity"] as? Int {
                 humidity = hum
-                
             } else {
-                
                 print("Error with humidity")
-                
             }
             
         } else {
-            
-            print("Error with main in forecast")
-            
+            print("Error with main dictionary")
         }
         
         if let wind = listDict["wind"] as? NSDictionary {
             
             if let speed = wind["speed"] as? Double {
-                
                 windSpeed = speed
-                
             } else {
-                
                 print("Error with windspeed")
-                
             }
             
         } else {
+            print("Error with wind dictionary")
+        }
+        
+        if let cloudCover = listDict["clouds"] as? NSDictionary {
             
-            print("Error with wind in forecast")
+            if let all = cloudCover["all"] as? Int {
+                clouds = all
+            } else {
+                print("Error with clouds all")
+            }
             
+        } else {
+            print("Error with cloud dictionary")
+        }
+        
+        //Rain and snow may not exist, if there is none in weather forecast
+        if let rainy = listDict["rain"] as? NSDictionary {
+            
+            if let rainVolume = rainy["3h"] as? Double {
+                rain = rainVolume
+            } else {
+                rain = 0.0
+            }
+            
+        } else {
+            rain = 0.0
+        }
+        
+        if let snowy = listDict["snow"] as? NSDictionary {
+            
+            if let snowVolume = snowy["3h"] as? Double {
+                snow = snowVolume
+            } else {
+                snow = 0.0
+            }
+            
+        } else {
+            snow = 0.0
         }
         
         if let weather = listDict["weather"] as? NSArray {
             
-            description = self.appendDescriptions(weather)
+            var appended = self.appendDescriptionsAndIcons(weather)
+            
+            description = appended.descriptionStr
+            icon = appended.iconArr[0]
             
         } else {
-            
             print("Error with weather array")
-            
         }
         
-        if let datetime = listDict["dt"] as? Double {
-            
-            dt = datetime
-            
-        } else {
-            
-            print("Error with datetime")
-            
-        }
+        quality = TodayInterfaceController.assignQuality(temp, humidity: humidity, wind: windSpeed)
+        
         
         //IN FUTURE NEED TO HANDLE IF ANY OF THESE ARE STILL ZERO BC OF ISSUES, WE LATER ASSUME ALL IS FINE
-        return (temperature, humidity, windSpeed, description, dt)
+        return Weather(dateTime: dateTime, temp: temp, humidity: humidity, windSpeed: windSpeed, clouds: clouds, rain: rain, snow: snow, description: description, icon: icon, quality: quality)
         
     }
     
     //Convert Unix datetime into usable day of week and hour strings
-    class func convertDT(dt: Double) -> (day: String, hour: String) {
-        
-        let date = NSDate(timeIntervalSince1970: dt)
+    class func convertDT(date: NSDate) -> (day: String, hour: String) {
         
         let dayFormatter = NSDateFormatter()
         dayFormatter.dateFormat = "E"
@@ -216,7 +289,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                     
                     self.nowSummaryLabel.setText(weatherValues.description)
          
-                    self.nowTemperatureLabel.setText("\(Int(weatherValues.temperature))°")
+                    self.nowTemperatureLabel.setText("\(Int(weatherValues.temp))°")
                             
                     self.nowHumidityLabel.setText("\(Int(weatherValues.humidity))%")
                             
@@ -226,7 +299,21 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                     
                     self.nowWindIcon.setImageNamed(TodayInterfaceController.getWindLevel(weatherValues.windSpeed)+".png")
                     
-                    self.nowWordLabel.setText(TodayInterfaceController.assignQuality(weatherValues.temperature, humidity: weatherValues.humidity, wind: weatherValues.windSpeed))
+                    self.nowWordLabel.setText(TodayInterfaceController.assignQuality(weatherValues.temp, humidity: weatherValues.humidity, wind: weatherValues.windSpeed))
+                    
+                    //Crazy complicated way to set alpha on a background image of a group
+                    let backgroundImage = UIImage(named: weatherValues.icon)
+                    UIGraphicsBeginImageContextWithOptions((backgroundImage?.size)!, false, 0.0)
+                    let ctx = UIGraphicsGetCurrentContext()
+                    let area = CGRectMake(0, 0, (backgroundImage?.size.width)!, (backgroundImage?.size.height)!)
+                    CGContextScaleCTM(ctx, 1, -1)
+                    CGContextTranslateCTM(ctx, 0, -area.size.height)
+                    CGContextSetAlpha(ctx, 0.3)
+                    CGContextDrawImage(ctx, area, backgroundImage?.CGImage)
+                    
+                    let finalImage = UIGraphicsGetImageFromCurrentImageContext()
+                    
+                    self.topGroup.setBackgroundImage(finalImage)
                     
                 } catch {
                     
@@ -267,9 +354,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                             
                             let weatherValues = self.getWeatherValues(listDict)
                             
-                            let values = ["temp":weatherValues.temperature, "humidity":weatherValues.humidity, "wind":weatherValues.windSpeed, "dt":weatherValues.dt]
-                            
-                            hourlyWeatherArr.append(values)
+                            hourlyWeatherArr.append(weatherValues)
                             
                             if hourlyWeatherArr.count > self.maxTodayRows {
                                 
@@ -278,23 +363,23 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                                     
                                     let todayRow = self.todayTable.rowControllerAtIndex(i) as! todayTableRowController
                                     
-                                    let weatherDict = hourlyWeatherArr[i]
+                                    let weatherItem = hourlyWeatherArr[i]
                                     
-                                    let rowTemp = weatherDict["temp"]!
+                                    let rowTemp = weatherItem.temp
                                     
-                                    let rowWindImage = TodayInterfaceController.getWindLevel(weatherDict["wind"]!)
+                                    let rowWindImage = TodayInterfaceController.getWindLevel(weatherItem.windSpeed)
                                     
-                                    let rowHumidityImage = TodayInterfaceController.getHumidityLevel(weatherDict["humidity"]!)
+                                    let rowHumidityImage = TodayInterfaceController.getHumidityLevel(weatherItem.humidity)
                                     
-                                    let rowDT = TodayInterfaceController.convertDT(weatherDict["dt"]!)
+                                    let rowDT = TodayInterfaceController.convertDT(weatherItem.dateTime)
                                     
-                                    todayRow.timeTempTodayLabel.setText(rowDT.hour+" | \(Int(rowTemp))°")
+                                    todayRow.timeTempTodayLabel.setText(rowDT.hour+" | \(rowTemp)°")
                                     
                                     todayRow.windTodayImage.setImageNamed(rowWindImage+".png")
                                     
                                     todayRow.humidityTodayImage.setImageNamed(rowHumidityImage+".png")
                                     
-                                    todayRow.qualityTodayLabel.setText(TodayInterfaceController.assignQuality(rowTemp, humidity: weatherDict["humidity"]!, wind: weatherDict["wind"]!))
+                                    todayRow.qualityTodayLabel.setText(TodayInterfaceController.assignQuality(rowTemp, humidity: weatherItem.humidity, wind: weatherItem.windSpeed))
                                     
                                 }
             
@@ -344,7 +429,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     }
     
     //Return the right humidity image name
-    class func getHumidityLevel(humidity: Double) -> String {
+    class func getHumidityLevel(humidity: Int) -> String {
         
         if humidity < 60 {
             
@@ -362,20 +447,20 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
     }
     
     //Assign quality of running weather  NEED TO FACTOR IN PRECIPITATION
-    class func assignQuality(temp: Double, humidity: Double, wind: Double) -> String {
+    class func assignQuality(temp: Int, humidity: Int, wind: Double) -> String {
         
         let humidityLevel = TodayInterfaceController.getHumidityLevel(humidity)
         
         let windLevel = TodayInterfaceController.getWindLevel(wind)
         
         //Hot temperatures
-        if temp > 70.0 {
+        if temp > 75 {
             
-            if temp > 95.0 {
+            if temp > 95 {
                 
                 return "Terrible"
                 
-            } else if temp > 85.0 && temp <= 95.0 {
+            } else if temp > 85 && temp <= 95 {
                 
                 if humidityLevel == "humidity_low" {
                     
@@ -427,7 +512,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         }
         
         //Cold temperatures
-        else if temp < 40.0 {
+        else if temp < 40 {
             
             if temp > 32 {
                 
@@ -499,7 +584,7 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
             
         }
         
-        //Ideal temperatures (40-70 degrees)
+        //Ideal temperatures (40-75 degrees)
         else {
             
             if humidityLevel == "humidity_high" {

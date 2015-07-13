@@ -16,19 +16,20 @@
             <objects>
                 <controller identifier="today" id="AgC-eL-Hgc" customClass="TodayInterfaceController" customModule="Running_Weather_WatchKit_1_Extension">
                     <items>
-                        <group width="1" height="100" alignment="left" layout="vertical" id="kT7-3u-tVH">
+                        <group width="1" height="100" alignment="left" contentMode="scaleAspectFill" layout="vertical" id="kT7-3u-tVH">
                             <items>
                                 <label alignment="center" text="Perfect!" textAlignment="center" id="AMf-ki-uxg">
+                                    <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <fontDescription key="font" name="AvenirNext-Heavy" family="Avenir Next" pointSize="30"/>
                                 </label>
                                 <label alignment="center" text="70°" id="yat-MG-ghx">
+                                    <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <fontDescription key="font" name="AvenirNext-Heavy" family="Avenir Next" pointSize="30"/>
                                 </label>
                                 <label alignment="center" verticalAlignment="bottom" text="Light breeze &amp; clouds" textAlignment="center" minimumScaleFactor="0.5" id="RU8-Hd-csT">
                                     <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
                                 </label>
                             </items>
-                            <color key="backgroundColor" red="0.19714130587673229" green="0.75597774621212122" blue="0.64568178402155185" alpha="1" colorSpace="calibratedRGB"/>
                         </group>
                         <group width="1" height="37" alignment="left" id="6JB-IX-AdR">
                             <items>
@@ -77,6 +78,7 @@
                         <outlet property="nowWindLabel" destination="jbc-ZI-IPC" id="wgr-q7-NGP"/>
                         <outlet property="nowWordLabel" destination="AMf-ki-uxg" id="dYn-m5-qDJ"/>
                         <outlet property="todayTable" destination="CgT-2g-pSn" id="zl4-6w-aVy"/>
+                        <outlet property="topGroup" destination="kT7-3u-tVH" id="mIV-c2-Uhe"/>
                         <segue destination="3H2-y0-u25" kind="relationship" relationship="nextPage" id="osj-T4-hB8"/>
                     </connections>
                 </controller>
