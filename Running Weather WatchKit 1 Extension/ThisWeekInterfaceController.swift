@@ -14,7 +14,7 @@ class ThisWeekInterfaceController: WKInterfaceController {
 
     @IBOutlet var weekTable: WKInterfaceTable!
     
-    //Function to pick the best weather in a given period of time
+    //Function to pick the best weather in a given period of time, Skipping 1am items
     class func getBestWeather(startIndex: Int, endIndex: Int) -> (indexArr: [Int], qualityName: String){
         
         //Arrays of indexes of various weather qualities
@@ -30,26 +30,30 @@ class ThisWeekInterfaceController: WKInterfaceController {
             
             let quality = TodayInterfaceController.assignQuality(weatherItem.temp, humidity: weatherItem.humidity, wind: weatherItem.windSpeed )
             
-            if quality == "Perfect" {
+            //Removing the 1am items
+            if TodayInterfaceController.convertDT(weatherItem.dateTime).hour != "1AM" {
                 
-                perfectArr.append(i)
+                if quality == "Perfect" {
                 
-            } else if quality == "Good" {
+                    perfectArr.append(i)
                 
-                goodArr.append(i)
+                } else if quality == "Good" {
                 
-            } else if quality == "OK" {
+                    goodArr.append(i)
                 
-                okArr.append(i)
+                } else if quality == "OK" {
                 
-            } else if quality == "Poor" {
+                    okArr.append(i)
                 
-                poorArr.append(i)
+                } else if quality == "Poor" {
                 
-            } else {
+                    poorArr.append(i)
                 
-                terribleArr.append(i)
+                } else {
                 
+                    terribleArr.append(i)
+                
+                }
             }
         }
         
@@ -84,12 +88,12 @@ class ThisWeekInterfaceController: WKInterfaceController {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
         
-        //Set up week table
-        var bestWeather = ThisWeekInterfaceController.getBestWeather(8, endIndex: 39)
-        
-        weekTable.setNumberOfRows(bestWeather.indexArr.count, withRowType: "weekTableRowController")
-        
         if hourlyWeatherArr.count > 0 {
+            
+            //Set up week table
+            var bestWeather = ThisWeekInterfaceController.getBestWeather(8, endIndex: 39)
+            
+            weekTable.setNumberOfRows(bestWeather.indexArr.count, withRowType: "weekTableRowController")
             
             for var i = 0; i < bestWeather.indexArr.count; i++ {
                 

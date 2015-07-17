@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="8121.20" systemVersion="14D136" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="8121.20" systemVersion="14E46" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc" defaultGlanceController="MSm-jA-eja">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8101.16"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="8066.14"/>
@@ -39,12 +39,12 @@
                                 <label alignment="right" verticalAlignment="center" text="3m/h" id="jbc-ZI-IPC"/>
                             </items>
                         </group>
-                        <table alignment="left" id="CgT-2g-pSn">
+                        <table alignment="left" spacing="0.0" id="CgT-2g-pSn">
                             <items>
-                                <tableRow identifier="todayTableRowController" id="EtP-lh-wKh" customClass="todayTableRowController" customModule="Running_Weather_WatchKit_1_Extension">
-                                    <group key="rootItem" width="1" alignment="left" id="DfA-9D-KmK">
+                                <tableRow identifier="todayTableRowController" selectable="NO" id="EtP-lh-wKh" customClass="todayTableRowController" customModule="Running_Weather_WatchKit_1_Extension">
+                                    <group key="rootItem" width="1" alignment="left" radius="0.0" id="DfA-9D-KmK">
                                         <items>
-                                            <imageView width="25" height="1" alignment="left" id="CXJ-AY-z3i"/>
+                                            <imageView width="25" height="1" alignment="left" contentMode="scaleAspectFit" id="CXJ-AY-z3i"/>
                                             <group width="0.59999999999999998" height="1" alignment="left" layout="vertical" id="EMx-iw-zf9">
                                                 <items>
                                                     <label width="1" height="0.29999999999999999" alignment="left" text="1pm | 60°" textAlignment="left" id="xBS-oh-P6q">
@@ -57,6 +57,7 @@
                                             <imageView width="15" height="0.29999999999999999" alignment="right" image="humidity_high.png" contentMode="scaleAspectFit" id="FhA-BH-UCw"/>
                                             <imageView width="15" height="0.29999999999999999" alignment="right" image="wind_high.png" contentMode="scaleAspectFit" id="Z1F-8Y-z7Y"/>
                                         </items>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </group>
                                     <connections>
                                         <outlet property="barTodayImage" destination="CXJ-AY-z3i" id="LCR-V7-FR0"/>
@@ -85,14 +86,14 @@
             </objects>
             <point key="canvasLocation" x="220" y="345"/>
         </scene>
-        <!--thisweek-->
+        <!--5-Day Best-->
         <scene sceneID="kd6-ME-UAa">
             <objects>
-                <controller identifier="thisweek" hidesWhenLoading="NO" id="3H2-y0-u25" customClass="ThisWeekInterfaceController" customModule="Running_Weather_WatchKit_1_Extension">
+                <controller identifier="thisweek" title="5-Day Best" hidesWhenLoading="NO" id="3H2-y0-u25" customClass="ThisWeekInterfaceController" customModule="Running_Weather_WatchKit_1_Extension">
                     <items>
                         <table alignment="left" id="Pqz-WP-SRm">
                             <items>
-                                <tableRow identifier="weekTableRowController" id="4v3-iq-vYe" customClass="weekTableRowController" customModule="Running_Weather_WatchKit_1_Extension">
+                                <tableRow identifier="weekTableRowController" selectable="NO" id="4v3-iq-vYe" customClass="weekTableRowController" customModule="Running_Weather_WatchKit_1_Extension">
                                     <group key="rootItem" width="1" alignment="left" id="lap-Jm-CNh">
                                         <items>
                                             <label alignment="left" verticalAlignment="center" text="SAT" id="UaY-dX-34O">
@@ -136,6 +137,28 @@
             </objects>
             <point key="canvasLocation" x="220" y="643"/>
         </scene>
+        <!--glance-->
+        <scene sceneID="LnB-Sn-y8W">
+            <objects>
+                <glanceController identifier="glance" hidesWhenLoading="NO" topTemplateType="groupLeftSmall" bottomTemplateType="extraLargeLargeBody1Footer" id="MSm-jA-eja" customClass="GlanceInterfaceController" customModule="Running_Weather_WatchKit_1_Extension">
+                    <items>
+                        <group alignment="left" id="Nuk-ew-SXJ">
+                            <items>
+                                <imageView width="1" height="1" alignment="left" id="Ek9-DY-U06"/>
+                            </items>
+                        </group>
+                        <label alignment="left" text="Label" id="Uu9-dy-fnZ"/>
+                        <label alignment="left" text="Label" id="ulE-Na-0gp"/>
+                        <label alignment="left" text="Label" id="9vw-z3-ZKF"/>
+                        <label alignment="left" text="1234" id="3WZ-Mg-37c"/>
+                        <label alignment="left" text="1234" id="XVa-Jg-olT"/>
+                        <label alignment="left" text="Label" id="eTP-v2-5cG"/>
+                        <label alignment="left" text="Footer" id="8OA-70-hyd"/>
+                    </items>
+                </glanceController>
+            </objects>
+            <point key="canvasLocation" x="218" y="895"/>
+        </scene>
         <!--Notification Controller-->
         <scene sceneID="ZPc-GJ-vnh">
             <objects>
@@ -144,4 +167,5 @@
             <point key="canvasLocation" x="468" y="643"/>
         </scene>
     </scenes>
+    <color key="tintColor" red="1" green="1" blue="0.0" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
 </document>

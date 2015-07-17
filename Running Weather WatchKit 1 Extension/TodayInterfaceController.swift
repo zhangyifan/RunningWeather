@@ -358,7 +358,6 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                             
                             if hourlyWeatherArr.count > self.maxTodayRows {
                                 
-                                //MIGHT WANT TO MOVE TO SEPARATE FUNCTION?
                                 for var i = 0; i < self.maxTodayRows; i++ {
                                     
                                     let todayRow = self.todayTable.rowControllerAtIndex(i) as! todayTableRowController
@@ -373,13 +372,17 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
                                     
                                     let rowDT = TodayInterfaceController.convertDT(weatherItem.dateTime)
                                     
+                                    let rowQuality = TodayInterfaceController.assignQuality(rowTemp, humidity: weatherItem.humidity, wind: weatherItem.windSpeed)
+                                    
                                     todayRow.timeTempTodayLabel.setText(rowDT.hour+" | \(rowTemp)°")
                                     
                                     todayRow.windTodayImage.setImageNamed(rowWindImage+".png")
                                     
                                     todayRow.humidityTodayImage.setImageNamed(rowHumidityImage+".png")
                                     
-                                    todayRow.qualityTodayLabel.setText(TodayInterfaceController.assignQuality(rowTemp, humidity: weatherItem.humidity, wind: weatherItem.windSpeed))
+                                    todayRow.qualityTodayLabel.setText(rowQuality)
+                                    
+                                    todayRow.barTodayImage.setImageNamed(self.getBar(rowQuality, index: i))
                                     
                                 }
             
@@ -408,6 +411,52 @@ class TodayInterfaceController: WKInterfaceController, CLLocationManagerDelegate
         
         task!.resume()
     
+    }
+    
+    //Return the right bar color and shape
+    func getBar (quality: String, index: Int) -> String {
+        
+        var imageName = "bar"
+        
+        //Color
+        if quality == "Perfect" {
+            
+            imageName += "_1"
+            
+        } else if quality == "Good" {
+            
+            imageName += "_2"
+            
+        } else if quality == "Ok" {
+            
+            imageName += "_3"
+            
+        } else if quality == "Poor" {
+            
+            imageName += "_4"
+            
+        } else if quality == "Terrible" {
+            
+            imageName += "_5"
+            
+        }
+        
+        //Size
+        if index == 0 {
+            
+            imageName += "_roundedtop.png"
+            
+        } else if index == maxTodayRows - 1 {
+            
+            imageName += "_roundedbottom.png"
+            
+        } else {
+            
+            imageName += "_flat.png"
+            
+        }
+        
+        return imageName
     }
     
     //Return the right wind image name
