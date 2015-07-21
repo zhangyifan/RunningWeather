@@ -9,6 +9,10 @@
             <string>AvenirNext-Heavy</string>
             <string>AvenirNext-Heavy</string>
         </mutableArray>
+        <mutableArray key="Symbol.ttf">
+            <string>Symbol</string>
+            <string>Symbol</string>
+        </mutableArray>
     </customFonts>
     <scenes>
         <!--today-->
@@ -140,21 +144,53 @@
         <!--glance-->
         <scene sceneID="LnB-Sn-y8W">
             <objects>
-                <glanceController identifier="glance" hidesWhenLoading="NO" topTemplateType="groupLeftSmall" bottomTemplateType="extraLargeLargeBody1Footer" id="MSm-jA-eja" customClass="GlanceInterfaceController" customModule="Running_Weather_WatchKit_1_Extension">
+                <glanceController identifier="glance" hidesWhenLoading="NO" topTemplateType="groupLeftSmall" bottomTemplateType="groupBody1Footer" id="MSm-jA-eja" customClass="GlanceInterfaceController" customModule="Running_Weather_WatchKit_1_Extension">
                     <items>
-                        <group alignment="left" id="Nuk-ew-SXJ">
+                        <group alignment="left" id="S12-Pa-DVM">
                             <items>
-                                <imageView width="1" height="1" alignment="left" id="Ek9-DY-U06"/>
+                                <imageView width="1" height="1" alignment="left" image="Icon_Homescreen_40x40.png" id="hjP-dp-S8F"/>
                             </items>
                         </group>
-                        <label alignment="left" text="Label" id="Uu9-dy-fnZ"/>
-                        <label alignment="left" text="Label" id="ulE-Na-0gp"/>
-                        <label alignment="left" text="Label" id="9vw-z3-ZKF"/>
-                        <label alignment="left" text="1234" id="3WZ-Mg-37c"/>
-                        <label alignment="left" text="1234" id="XVa-Jg-olT"/>
-                        <label alignment="left" text="Label" id="eTP-v2-5cG"/>
-                        <label alignment="left" text="Footer" id="8OA-70-hyd"/>
+                        <label alignment="left" hidden="YES" text="Label" id="Uu9-dy-fnZ"/>
+                        <label alignment="left" hidden="YES" text="Label" id="OQ0-rD-cV0"/>
+                        <label alignment="left" text="Now:" id="774-2e-f7Y">
+                            <color key="textColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                        </label>
+                        <group alignment="left" id="gP5-4x-hck">
+                            <items>
+                                <group width="1" height="117" alignment="left" layout="vertical" id="pa6-6t-JxW">
+                                    <items>
+                                        <label alignment="center" text="Perfect" id="0gm-bR-1t9">
+                                            <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <fontDescription key="font" name="Symbol" family="Symbol" pointSize="27"/>
+                                        </label>
+                                        <group width="1" alignment="left" id="BGq-Yb-j6Z">
+                                            <items>
+                                                <label alignment="center" text="70°" id="cF2-Mj-ud1">
+                                                    <fontDescription key="font" name="Symbol" family="Symbol" pointSize="21"/>
+                                                </label>
+                                                <imageView width="20" height="1" alignment="center" image="humidity_low.png" contentMode="scaleAspectFit" id="cU9-DZ-02e"/>
+                                                <imageView width="20" height="1" alignment="center" image="wind_medium.png" contentMode="scaleAspectFit" id="uS7-ij-uwt"/>
+                                            </items>
+                                        </group>
+                                    </items>
+                                </group>
+                            </items>
+                        </group>
+                        <label alignment="left" text="SAT 3PM" id="F1l-SP-Mlv">
+                            <color key="textColor" red="1" green="1" blue="0.0" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                        </label>
+                        <label alignment="left" text="Next perfect run" id="Flg-gd-wbX"/>
                     </items>
+                    <connections>
+                        <outlet property="appIcon" destination="hjP-dp-S8F" id="hud-EZ-Ege"/>
+                        <outlet property="centerGroup" destination="pa6-6t-JxW" id="vd4-J0-qMu"/>
+                        <outlet property="humImage" destination="cU9-DZ-02e" id="Pzb-bF-7Cy"/>
+                        <outlet property="nextHourLabel" destination="F1l-SP-Mlv" id="4Cz-km-FNM"/>
+                        <outlet property="qualityLabel" destination="0gm-bR-1t9" id="2vb-Cj-Yw8"/>
+                        <outlet property="tempLabel" destination="cF2-Mj-ud1" id="qv3-tf-bTs"/>
+                        <outlet property="windImage" destination="uS7-ij-uwt" id="2QK-8e-IYH"/>
+                    </connections>
                 </glanceController>
             </objects>
             <point key="canvasLocation" x="218" y="895"/>

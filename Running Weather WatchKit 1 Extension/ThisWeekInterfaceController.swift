@@ -15,7 +15,7 @@ class ThisWeekInterfaceController: WKInterfaceController {
     @IBOutlet var weekTable: WKInterfaceTable!
     
     //Function to pick the best weather in a given period of time, Skipping 1am items
-    class func getBestWeather(startIndex: Int, endIndex: Int) -> (indexArr: [Int], qualityName: String){
+    class func getBestWeather(startIndex: NSInteger, endIndex: NSInteger) -> (indexArr: [Int], qualityName: String){
         
         //Arrays of indexes of various weather qualities
         var perfectArr:[Int] = []
@@ -28,7 +28,7 @@ class ThisWeekInterfaceController: WKInterfaceController {
             
             let weatherItem = hourlyWeatherArr[i]
             
-            let quality = TodayInterfaceController.assignQuality(weatherItem.temp, humidity: weatherItem.humidity, wind: weatherItem.windSpeed )
+            let quality = weatherItem.assignQuality(weatherItem.temp, humidity: weatherItem.humidity, wind: weatherItem.windSpeed )
             
             //Removing the 1am items
             if TodayInterfaceController.convertDT(weatherItem.dateTime).hour != "1AM" {

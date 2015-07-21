@@ -8,14 +8,27 @@
 
 import WatchKit
 import Foundation
-
+import CoreLocation
 
 class GlanceInterfaceController: WKInterfaceController {
+    
+    @IBOutlet var appIcon: WKInterfaceImage!
+    
+    @IBOutlet var centerGroup: WKInterfaceGroup!
+    
+    @IBOutlet var qualityLabel: WKInterfaceLabel!
+    
+    @IBOutlet var tempLabel: WKInterfaceLabel!
+    
+    @IBOutlet var humImage: WKInterfaceImage!
+    
+    @IBOutlet var windImage: WKInterfaceImage!
+    
+    @IBOutlet var nextHourLabel: WKInterfaceLabel!
 
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         
-        // Configure interface objects here.
     }
 
     override func willActivate() {
