@@ -158,7 +158,7 @@
                         </label>
                         <group alignment="left" id="gP5-4x-hck">
                             <items>
-                                <group width="1" height="117" alignment="left" layout="vertical" id="pa6-6t-JxW">
+                                <group width="1" height="117" alignment="left" contentMode="scaleAspectFill" layout="vertical" id="pa6-6t-JxW">
                                     <items>
                                         <label alignment="center" text="Perfect" id="0gm-bR-1t9">
                                             <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -187,6 +187,7 @@
                         <outlet property="centerGroup" destination="pa6-6t-JxW" id="vd4-J0-qMu"/>
                         <outlet property="humImage" destination="cU9-DZ-02e" id="Pzb-bF-7Cy"/>
                         <outlet property="nextHourLabel" destination="F1l-SP-Mlv" id="4Cz-km-FNM"/>
+                        <outlet property="nextQualityLabel" destination="Flg-gd-wbX" id="i5w-pm-5PZ"/>
                         <outlet property="qualityLabel" destination="0gm-bR-1t9" id="2vb-Cj-Yw8"/>
                         <outlet property="tempLabel" destination="cF2-Mj-ud1" id="qv3-tf-bTs"/>
                         <outlet property="windImage" destination="uS7-ij-uwt" id="2QK-8e-IYH"/>

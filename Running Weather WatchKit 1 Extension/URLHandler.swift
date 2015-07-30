@@ -22,7 +22,7 @@ class URLHandler: NSObject {
         
     }
     
-    func getResponse (urlString: String) {
+    func getResponse (urlString: String, closure: (NSDictionary) -> ()) {
         
         url = NSURL(string: urlString)!
         
@@ -32,7 +32,11 @@ class URLHandler: NSObject {
                 
                 do {
                     
-                    self.jsonResult = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+                    let json = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+                    
+                    self.jsonResult = json
+                    
+                    closure(self.jsonResult)
                     
                 } catch {
                     
@@ -48,6 +52,25 @@ class URLHandler: NSObject {
         }
         
         task!.resume()
+        
+    }
+    
+    //Convert Unix datetime NSIntegero usable day of week and hour strings
+    class func convertDT(date: NSDate) -> (day: String, hour: String) {
+        
+        let dayFormatter = NSDateFormatter()
+        dayFormatter.dateFormat = "E"
+        dayFormatter.timeZone = NSTimeZone()
+        
+        let timeFormatter = NSDateFormatter()
+        timeFormatter.dateFormat = "ha"
+        timeFormatter.timeZone = NSTimeZone()
+        
+        
+        let localDay = dayFormatter.stringFromDate(date)
+        let localTime = timeFormatter.stringFromDate(date)
+        
+        return (localDay, localTime)
         
     }
 

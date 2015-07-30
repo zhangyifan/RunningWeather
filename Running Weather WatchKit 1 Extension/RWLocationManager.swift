@@ -17,7 +17,7 @@ class RWLocationManager: NSObject, CLLocationManagerDelegate {
     
     var myLocationManager = CLLocationManager()
     
-    func getLocation() {
+    func getLocation(closure: (CLLocation) -> ()) {
         
         myLocationManager.delegate = self
         myLocationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -27,13 +27,13 @@ class RWLocationManager: NSObject, CLLocationManagerDelegate {
         //Make sure location is set and not zero
         if location.coordinate.latitude != 0.0 || location.coordinate.longitude != 0.0 {
             
+            closure(location)
+            
+            print("Location worked!")
+            
             myLocationManager.stopUpdatingLocation()
             
             myLocationManager.startMonitoringSignificantLocationChanges()
-            
-        } else {
-            
-            print("Error: Lat and Long still 0.0")
             
         }
         

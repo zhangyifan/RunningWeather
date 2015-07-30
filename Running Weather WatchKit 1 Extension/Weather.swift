@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import CoreLocation
+
+let weatherAPIKey = "ef2c62731316105942e0658cb48dbbd5"
 
 //Main weather object, per hour
 class Weather: NSObject {
@@ -130,7 +133,7 @@ class Weather: NSObject {
         
         
         //IN FUTURE NEED TO HANDLE IF ANY OF THESE ARE STILL ZERO BC OF ISSUES, WE LATER ASSUME ALL IS FINE
-        return Weather(dateTime: dateTime, temp: temp, humidity: humidity, windSpeed: windSpeed, clouds: clouds, rain: rain, snow: snow, conditionDescription: description, icon: icon, quality: quality)
+        return Weather(dateTime: dateTime, temp: temp, humidity: humidity, windSpeed: windSpeed, clouds: clouds, rain: rain, snow: snow, conditionDescription: conditionDescription, icon: icon, quality: quality)
         
     }
     
@@ -366,6 +369,122 @@ class Weather: NSObject {
             }
             
         }
+    }
+    
+    //Function to pick the best weather in a given period of time, Skipping 1am items
+    class func getBestWeather(startIndex: NSInteger, endIndex: NSInteger, closure: (array: [NSInteger], condition: String)->() ) {
+        
+        //Arrays of indexes of various weather qualities
+        var perfectArr:[NSInteger] = []
+        var goodArr:[NSInteger] = []
+        var okArr:[NSInteger] = []
+        var poorArr:[NSInteger] = []
+        var terribleArr:[NSInteger] = []
+        
+        for var i = startIndex; i <= endIndex; i++ {
+            
+            let weatherItem = hourlyWeatherArr[i]
+            
+            let quality = weatherItem.assignQuality(weatherItem.temp, humidity: weatherItem.humidity, wind: weatherItem.windSpeed )
+            
+            //Removing the 1am items
+            if URLHandler.convertDT(weatherItem.dateTime).hour != "1AM" {
+                
+                if quality == "Perfect" {
+                    
+                    perfectArr.append(i)
+                    
+                } else if quality == "Good" {
+                    
+                    goodArr.append(i)
+                    
+                } else if quality == "OK" {
+                    
+                    okArr.append(i)
+                    
+                } else if quality == "Poor" {
+                    
+                    poorArr.append(i)
+                    
+                } else {
+                    
+                    terribleArr.append(i)
+                    
+                }
+            }
+        }
+        
+        if perfectArr.count > 0 {
+            
+            closure(array: perfectArr, condition: "Perfect")
+            
+        } else if goodArr.count > 0 {
+            
+            closure(array: goodArr, condition: "Good")
+            
+        } else if okArr.count > 0 {
+            
+            closure(array: okArr, condition: "Ok")
+            
+        } else if poorArr.count > 0 {
+            
+            closure(array: goodArr, condition: "Good")
+            
+        } else {
+            
+            closure(array: terribleArr, condition: "Terrible")
+            
+        }
+    }
+    
+    //Get current weather conditions
+    class func getNowWeather(location: CLLocation, closure: (weatherValues: Weather)->()) {
+        
+        let nowWeatherHandler = URLHandler(url: NSURL(), jsonResult: NSDictionary())
+        
+        let nowWeather = Weather(dateTime: NSDate(), temp: 0, humidity: 0, windSpeed: 0.0, clouds: 0, rain: 0.0, snow: 0.0, conditionDescription: "", icon: "", quality: "")
+        
+        nowWeatherHandler.getResponse("http://api.openweathermap.org/data/2.5/weather?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&units=imperial&APPID="+weatherAPIKey, closure: {(jsonResult: NSDictionary) -> () in
+            
+            let weatherValues = nowWeather.getWeatherValues(jsonResult)
+            
+            closure(weatherValues: weatherValues)
+            
+        })
+        
+    }
+    
+    //Update hourlyWeatherArr with hourly weather conditions
+    class func getHourlyWeather(location: CLLocation, closure: ()->()) {
+        
+        let hourlyWeatherHandler = URLHandler(url: NSURL(), jsonResult: NSDictionary())
+        
+        hourlyWeatherHandler.getResponse("http://api.openweathermap.org/data/2.5/forecast?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&units=imperial&APPID="+weatherAPIKey, closure: {(jsonResult: NSDictionary) -> () in
+            
+            //Checking that the list array exists
+            if let list = jsonResult["list"] as? NSArray {
+                
+                for item in list {
+                    
+                    let listDict = item as! NSDictionary
+                    
+                    let hourlyWeather = Weather(dateTime: NSDate(), temp: 0, humidity: 0, windSpeed: 0.0, clouds: 0, rain: 0.0, snow: 0.0, conditionDescription: "", icon: "", quality: "")
+                    
+                    let weatherValues = hourlyWeather.getWeatherValues(listDict)
+                    
+                    hourlyWeatherArr.append(weatherValues)
+                    
+                }
+                
+                closure()
+                
+            } else {
+                
+                print("Error with hourly NSArray")
+            }
+
+        })
+        
     }
     
     
